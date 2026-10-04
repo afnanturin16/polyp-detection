@@ -1,0 +1,13 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+# CPU-only PyTorch (from the extra index above). Versions match the tested demo environment (Python 3.12).
+torch==2.6.0
+torchvision==0.21.0
+timm==1.0.29
+segmentation-models-pytorch==0.5.0
+albumentations==2.0.8
+opencv-python-headless==5.0.0.93
+numpy==2.0.2
+pillow==12.3.0
+fastapi==0.141.1
+pydantic==2.13.5
+uvicorn==0.53.0

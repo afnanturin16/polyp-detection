@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colorectal Polyp Detection</title>
+<link rel="stylesheet" href="style.css">
+<script>try { if (localStorage.getItem("polyp_theme") === "dark") document.documentElement.dataset.theme = "dark"; } catch (e) {}</script>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="rail">
+    <div class="rail-top">
+      <div class="wordmark">
+        <span class="wordmark-glyph">◆</span>
+        <div>
+          <div class="wordmark-name">Polyp <em>Detection</em></div>
+          <div class="wordmark-sub">Colorectal histopathology</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="rail-nav">
+      <button class="rail-link is-active" data-view="home">
+        <span class="rail-num">01</span> Overview
+      </button>
+      <button class="rail-link" data-view="classify">
+        <span class="rail-num">02</span> Classify
+      </button>
+      <button class="rail-link" data-view="compare">
+        <span class="rail-num">03</span> Compare models
+      </button>
+      <button class="rail-link" data-view="batch">
+        <span class="rail-num">04</span> Batch upload
+      </button>
+      <button class="rail-link" data-view="history">
+        <span class="rail-num">05</span> Session log
+      </button>
+      <button class="rail-link" data-view="about">
+        <span class="rail-num">06</span> Methodology
+      </button>
+    </nav>
+
+    <div class="rail-bottom">
+      <div class="rail-row">
+        <div class="rail-flag">Research use only</div>
+        <button id="theme-toggle" class="theme-switch" type="button" role="switch"
+                aria-checked="false" aria-label="Dark mode" title="Dark mode">
+          <span class="ts-knob">
+            <svg class="ts-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="ts-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="stage">
+
+    <!-- ---------- HOME ---------- -->
+    <section class="view is-active" id="view-home">
+      <div class="hero">
+        <div class="hero-eyebrow">Six-class histopathology classification</div>
+        <h1 class="hero-title">A cascade that gives each<br>diagnostic decision the<br>resolution it actually needs.</h1>
+        <p class="hero-lede">
+          Hyperplastic polyps, normal tissue, and four adenoma subtypes —
+          classified through three sequential decisions, each evaluated
+          at the input resolution its sub-task requires.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-goto="classify">Classify a patch</button>
+          <button class="btn btn-ghost" data-goto="about">How it works</button>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-value">0.448</div>
+          <div class="stat-label">balanced accuracy<br>± 0.023, three seeds</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-value">22×</div>
+          <div class="stat-label">smaller lightweight<br>variant, CasLite</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-value">+18.3</div>
+          <div class="stat-label">points gained on grading<br>from higher resolution<br>(single exploratory run)</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-value">0.925</div>
+          <div class="stat-label">Dice on expert-annotated<br>glands (GlaS test set)</div>
+        </div>
+      </div>
+
+      <div class="pipeline-preview">
+        <div class="section-kicker">The cascade</div>
+        <div class="mini-cascade">
+          <div class="mc-node"><span>1</span>Type</div>
+          <div class="mc-line"></div>
+          <div class="mc-node"><span>2</span>Architecture</div>
+          <div class="mc-line"></div>
+          <div class="mc-node"><span>3</span>Grade</div>
+        </div>
+        <p class="pipeline-note">HP and normal-tissue patches exit after stage 1.
+          Only adenoma patches reach architecture and grade.</p>
+      </div>
+    </section>
+
+    <!-- ---------- CLASSIFY ---------- -->
+    <section class="view" id="view-classify">
+      <div class="view-head">
+        <h2>Classify</h2>
+        <p>Upload an H&amp;E-stained colorectal tissue patch.</p>
+      </div>
+
+      <div class="classify-grid">
+
+        <div class="col-left">
+          <div class="model-toggle" id="model-toggle">
+            <button class="mt-opt is-active" data-model="cascade">
+              <div class="mt-name">Cascade</div>
+              <div class="mt-meta">33.5M params · full accuracy</div>
+            </button>
+            <button class="mt-opt" data-model="caslite">
+              <div class="mt-name">CasLite</div>
+              <div class="mt-meta">1.53M params · 22× smaller</div>
+            </button>
+          </div>
+
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="file-input" accept="image/*" hidden>
+            <div class="dz-inner" id="dz-inner">
+              <div class="dz-icon">＋</div>
+              <div class="dz-text">Drop a patch here, or <span>browse</span></div>
+            </div>
+          </div>
+
+          <p class="about-note">For H&amp;E-stained colorectal tissue patches only</p>
+          <div class="sanity-warning" id="sanity-warning" hidden></div>
+
+          <div class="report-fields">
+            <input type="text" id="patient-name" placeholder="Name (for report)" maxlength="80" autocomplete="off">
+            <input type="number" id="patient-age" placeholder="Age" min="0" max="130" autocomplete="off">
+          </div>
+
+          <button class="btn btn-primary btn-block" id="classify-btn" disabled>
+            Run classification
+          </button>
+          <button class="btn btn-ghost btn-block" id="report-btn" disabled>
+            Download report
+          </button>
+        </div>
+
+        <div class="col-right" id="classify-results">
+          <div class="empty-state">
+            <div class="empty-glyph">○</div>
+            <p>Results will appear here once you run a classification.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ---------- COMPARE ---------- -->
+    <section class="view" id="view-compare">
+      <div class="view-head">
+        <h2>Compare models</h2>
+        <p>Run the same patch through both models — the accuracy /
+           efficiency trade-off, made visible.</p>
+      </div>
+
+      <div class="compare-grid">
+        <div class="col-left">
+          <div class="dropzone" id="dropzone-cmp">
+            <input type="file" id="file-input-cmp" accept="image/*" hidden>
+            <div class="dz-inner" id="dz-inner-cmp">
+              <div class="dz-icon">＋</div>
+              <div class="dz-text">Drop a patch here, or <span>browse</span></div>
+            </div>
+          </div>
+          <p class="about-note">For H&amp;E-stained colorectal tissue patches only</p>
+          <div class="sanity-warning" id="sanity-warning-cmp" hidden></div>
+
+          <button class="btn btn-primary btn-block" id="compare-btn" disabled>
+            Compare both models
+          </button>
+        </div>
+
+        <div class="col-right">
+          <div id="compare-summary" class="compare-summary-empty">
+            <p>Comparison summary will appear here.</p>
+          </div>
+          <div class="compare-pair" id="compare-pair"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- HISTORY ---------- -->
+    <!-- ---------- BATCH ---------- -->
+    <section class="view" id="view-batch">
+      <div class="view-head">
+        <h2>Batch upload</h2>
+        <p>Classify up to 10 patches at once. They are run one at a time, not GPU-batched.</p>
+      </div>
+      <div class="classify-grid">
+        <div class="col-left">
+          <div class="dropzone" id="dropzone-batch" style="aspect-ratio: 2 / 1;">
+            <div class="dz-inner" id="dz-inner-batch">
+              <div class="dz-icon">＋</div>
+              <div class="dz-text">Drop up to 10 patches here, or <span>browse</span></div>
+            </div>
+            <input type="file" accept="image/*" multiple hidden>
+          </div>
+          <p class="about-note">For H&amp;E-stained colorectal tissue patches only</p>
+          <p class="about-note" id="batch-files">No files selected.</p>
+          <p class="about-note">
+            <label><input type="radio" name="batch-model" value="cascade" checked> Cascade</label> &nbsp;
+            <label><input type="radio" name="batch-model" value="caslite"> CasLite</label>
+          </p>
+          <button class="btn btn-primary btn-block" id="batch-btn" disabled>Run batch</button>
+        </div>
+        <div class="col-right" id="batch-results">
+          <div class="empty-state"><div class="empty-glyph">◇</div><p>Select patches and run the batch.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-history">
+      <div class="view-head">
+        <h2>Session log</h2>
+        <p>Every prediction made this session. Stored in your browser only.</p>
+      </div>
+      <div id="log-stats"></div>
+      <div class="log-actions">
+        <button class="btn btn-ghost btn-sm" id="clear-log">Clear log</button>
+      </div>
+      <table class="log-table">
+        <thead>
+          <tr><th>Time</th><th>Model</th><th>Prediction</th><th>Confidence</th><th>Latency</th></tr>
+        </thead>
+        <tbody id="log-body"></tbody>
+      </table>
+      <div class="empty-state" id="log-empty">
+        <div class="empty-glyph">○</div>
+        <p>No predictions yet this session.</p>
+      </div>
+    </section>
+
+    <!-- ---------- ABOUT ---------- -->
+    <section class="view" id="view-about">
+      <div class="view-head">
+        <h2>Methodology</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-block">
+          <div class="section-kicker">Three sequential decisions</div>
+          <div class="about-stage">
+            <span class="as-num">1</span>
+            <div><b>Type</b> — 512 px<br><span>hyperplastic / normal / adenoma</span></div>
+          </div>
+          <div class="about-stage">
+            <span class="as-num">2</span>
+            <div><b>Architecture</b> — 512 px<br><span>tubular vs. tubulovillous, adenomas only</span></div>
+          </div>
+          <div class="about-stage">
+            <span class="as-num">3</span>
+            <div><b>Grade</b> — 896 px<br><span>low vs. high dysplasia, adenomas only</span></div>
+          </div>
+          <p class="about-note">CasLite reproduces this routing in a single shared
+            MobileNetV3-Small encoder with three task heads.</p>
+        </div>
+
+        <div class="about-block">
+          <div class="section-kicker">Validated results</div>
+          <table class="about-table">
+            <thead><tr><th></th><th>Cascade</th><th>CasLite</th></tr></thead>
+            <tbody>
+              <tr><td>Balanced accuracy</td><td>0.448 ± 0.023</td><td>0.397</td></tr>
+              <tr><td>Parameters</td><td>33.5M</td><td>1.53M</td></tr>
+              <tr><td>GFLOPs</td><td>96.46</td><td>1.75</td></tr>
+              <tr><td>ms / patch</td><td>5.37</td><td>2.96</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="about-block about-block-wide">
+          <div class="section-kicker">Limitations</div>
+          <p>This is a research system trained on a single institution's
+            data. Per-class performance is uneven, and weakest on the
+            high-grade classes — the ones that matter most clinically.
+            Gland segmentation marks glandular structure, not disease;
+            Grad-CAM attention shows what influenced a prediction, not
+            where pathology is. This tool is <b>not a diagnostic
+            instrument</b> and must not be used to inform patient care.</p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- Single-result report: filled by app.js, visible only when printing (see @media print in style.css) -->
+<div id="report" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

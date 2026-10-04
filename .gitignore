@@ -1,0 +1,26 @@
+# virtual environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# test outputs and logs
+*.log
+test_output/
+test_outputs/
+verification/out/
+verification/*.out.json
+
+# editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env
